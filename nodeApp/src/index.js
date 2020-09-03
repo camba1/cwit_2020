@@ -1,10 +1,9 @@
 'use strict';
 
 const express = require('express');
-const mySqldb = require('./mySqlData');
+const mariaDbData = require('./mariaDbData');
 const helloWorld = require('./helloworld');
 
-//DEMO code....do not do this at home folks!
 // Constants
 const PORT = 3000;
 const HOST = '0.0.0.0';
@@ -19,9 +18,9 @@ app.get('/', (req, res) => {
   helloWorld.sayHello(req, res)
 });
 
-//mySQL page calls mysqldb module
-app.get('/mysql', (req, res) => {
-   mySqldb.getMySqlData(req, res)
+//mariadb page calls mariadb module
+app.get('/mariadb', (req, res) => {
+   mariaDbData.getData(req, res)
   }
 );
 

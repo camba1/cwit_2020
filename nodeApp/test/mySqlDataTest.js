@@ -2,11 +2,11 @@
 
 const chai = require('chai');
 const expect  = require('chai').expect;
-const mySqlData = require('./../src/mySqlData');
+const mariaDbData = require('./../src/mariaDbData');
 
 //Pull DB data test
 const foo = 'bar';
-describe('mySqlData Tests',() => {
+describe('Data Tests',() => {
   describe('Dummy Test', () => {
     it('is a dummy test', () => {
       expect(foo).to.be.a('string');
@@ -14,10 +14,9 @@ describe('mySqlData Tests',() => {
       expect(foo).to.have.lengthOf(3);
     });
   });
-  describe('Get Data from MySql', () => {
+  describe('Get Data from the DB', () => {
     it('Get data from test table', async () => {
-      let myData = await mySqlData.getMySqlDataProm();
-      mySqlData.closePool();
+      let myData = await mariaDbData.getMariaBbData();
       expect(myData).to.not.be.null;
       expect(myData).to.be.an('array');
     });
