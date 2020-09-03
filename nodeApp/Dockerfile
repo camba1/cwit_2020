@@ -2,7 +2,7 @@ FROM node
 WORKDIR /code
 
 COPY package.json /code
-RUN npm install mysql2
+RUN npm install mariadb
 RUN npm install express
 RUN npm install pug
 RUN npm install chai

@@ -1,7 +1,7 @@
 {
-  "name": "NodeWithMySql",
+  "name": "CWIT2020Demo",
   "version": "0.0.1",
-  "description": "Playing with node and multiple DBs",
+  "description": "Demo for CWIT 2020 conference",
   "main": "./src/index.js",
   "author": "Juan Peredo Bolbeck LLC <jperedo@Bolbeck.com>",
   "license": "MIT",
@@ -17,7 +17,7 @@
     "mocha-junit-reporter": "^1.23.1"
   },
   "dependencies": {
-    "mysql2": "^1.7.0",
+    "mariadb": "^2.4.2",
     "express": "^4.17.1",
     "pug": "^2.0.4"
   }
