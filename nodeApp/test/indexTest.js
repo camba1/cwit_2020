@@ -19,7 +19,7 @@ describe('Index Tests',() => {
   });
   describe('HTTP End point tests', () => {
     it('Returns hello world when hitting root', done => {
-      chai.request(app)
+      chai.request("localhost:3000")
         .get("/")
         .end((err,res) => {
           expect(err).to.be.null;
