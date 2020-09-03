@@ -22,7 +22,7 @@ Also, this document refers to the image in docker hub as _bolbeck/cwit2020_. You
 
 The app has two parts:
 
-- **MariaDB database**: based on the official MariaDB image. The DB is initialized to have a test DB and a Test table with some sample dummy data. The initialization is used with the script in the myMariaInit directory. This is run only once and only if the data volume (./mySqlDB) is empty
+- **MariaDB database**: based on the official MariaDB image. The DB is initialized to have a test DB and a Test table with some sample dummy data. The initialization is used with the script in the ./MariaDB/init directory. This is run only once and only if the data volume (./MariaDB/Data) is empty
 
 
 - **Nodejs**: app which is built from the ```Dockerfile``` in the nodeApp directory. The app has two entry points:
@@ -38,8 +38,8 @@ Note that the application sends back pre-rendered page back to the client and us
 To bring up just the nodejs app:
 
 - Go to the ./nodeApp directory
-- Build the app: ``` docker build -t nodewithmariadb_nodemaria . ```
-- Run the container: ``` docker run -p 3000:3000 --env-file ./docker-node.env --name nodemariacont nodewithmariadb_nodemaria ```
+- Build the app: ``` docker build -t nodewithmariadb_nodewithdb . ```
+- Run the container: ``` docker run -p 3000:3000 --env-file ./docker-node.env --name nodewithdbcont nodewithmariadb_nodewithdb ```
 - Open ``` localhost:3000 ``` in your browser
 
 Note that this will bring up only the nodejs application and not the DB, so the app will fail if you try to access the second page (```localhost:3000/mariadb```)
@@ -60,14 +60,14 @@ npm install
 If you do not have npm installed in your machine, from the root folder of our repo (where we have the docker-compose file):
 
 ``` bash
-docker-compose run --rm  nodemysql bash
+docker-compose run --rm  nodewithdb bash
 npm install
 exit
 ```
 The above commands will:
 
 - Start the nodemaria service defined in our docker-compose file and log you  into the console in the container
-- In the container, run npm install, which creates the node_modules folder in the container. Since we have a volume mounted in our container to the nodeApp folder in our machine (as defined in our dockercompose file), the node_modules folder gets created in our host machine as well and is ready for use.
+- In the container, run npm install, which creates the node_modules folder in the container. Since we have a volume mounted in our container to the nodeApp folder in our machine (as defined in our docker-compose file), the node_modules folder gets created in our host machine as well and is ready for use.
 - Exit the container and return to our host machine
 
 ###### Bring the application up
@@ -79,7 +79,7 @@ Use ```docker-compose up``` in the same directory where you have the docker-comp
 
 - With the application running, login to the container with:
 
-  `docker exec -it nodemariacont 'bash'`
+  `docker exec -it nodewithdbcont 'bash'`
 
 - Run `npm test`
 - To exit the container just use `exit`.
@@ -88,7 +88,7 @@ The application test scripts were created using _mocha_ and _chai_.
 
 #### Restarting the nodejs container during development
 
-During development, you may wantto restart the nodejs container. You can do this with: ```docker restart nodemariacont```
+During development, you may want to restart the nodejs container. You can do this with: ```docker restart nodewithdbcont```
 
 Alternatively you can install something like nodemon in your image to monitor for changes in the file system.
 
@@ -98,9 +98,9 @@ Use ```docker-compose down``` in the same directory where you have the docker-co
 
 ### Tag and push image manually
 
-To push this the node image to dockerhub, we will first need to tag it properly, based in the dockerhub account id. we can also give it a proper tag so that we can keep a history.
+To push this the node image to docker hub, we will first need to tag it properly, based in the docker hub account id. we can also give it a proper tag so that we can keep a history.
 
-- login to dockerhub, tag image and push to docker hub:
+- login to docker hub, tag image and push to docker hub:
 
 ```bash
 docker login --username <dockerUserId>
