@@ -1,7 +1,7 @@
-# Simplify your life with Docker, Jenkins and Minikube
-## DevOps World 2020
+# Introduction to K8s
+## CWIT Conference 2020
 
-Simple Nodejs application connecting to MySQL and with hooks to Docker Jenkins and Kubernetes running in Minikube. This application is part of the 'Simplify your life with Docker, Jenkins and Minikube' presentation at DevOps World 2020.
+Simple Nodejs application connecting to MariaDB and packaged with Docker for deployment in Kubernetes . This application is part of the 'Introduction to K8s' presentation at the Central Wisconsin IT Conference 2020.
 
 ### About this project
 This project was initially created for a demo. If you see something that could be improved either in the code or this document please feel free to open a pull request.
@@ -16,18 +16,18 @@ In order to run the project in its entirety, you will need to have :
 - [Docker](docker.com) installed in your machine ( I used Docker Desktop on my Mac)
 - [Minikube](https://minikube.sigs.k8s.io) installed in your machine
 
-Also, this document refers to the image in docker hub as _bolbeck/dow2020simplelife_. You should change this to your own image name so that it can run under your own docker hub account (otherwise you will not be able to push the image out).
+Also, this document refers to the image in docker hub as _bolbeck/cwit2020_. You should change this to your own image name so that it can run under your own docker hub account (otherwise you will not be able to push the image out).
 
 ### The Application
 
 The app has two parts:
 
-- **MySQL database**: based on the official MySQL image. The DB is initialized to have a test DB and a Test table with some sample dummy data. The initialization is used with the script in the mySqlInit directory. This is run only once and only if the data volume (./mySqlDB) is empty
+- **MariaDB database**: based on the official MariaDB image. The DB is initialized to have a test DB and a Test table with some sample dummy data. The initialization is used with the script in the myMariaInit directory. This is run only once and only if the data volume (./mySqlDB) is empty
 
 
 - **Nodejs**: app which is built from the ```Dockerfile``` in the nodeApp directory. The app has two entry points:
     - **Root** ("/") just pulls writes hello world and the hostname
-    - **/mysql** pull data from the test DB in MYSql and posts the JSON on the browser
+    - **/mariadb** pull data from the test DB in MariaDB and posts the JSON on the browser
 
 Note that the application sends back pre-rendered page back to the client and uses _pug_ as the rendering engine.
 
@@ -38,11 +38,11 @@ Note that the application sends back pre-rendered page back to the client and us
 To bring up just the nodejs app:
 
 - Go to the ./nodeApp directory
-- Build the app: ``` docker build -t nodewithmysql_nodemysql . ```
-- Run the container: ``` docker run -p 3000:3000 --env-file ./docker-node.env --name nodemysqlcont nodewithmysql_nodemysql ```
+- Build the app: ``` docker build -t nodewithmariadb_nodemaria . ```
+- Run the container: ``` docker run -p 3000:3000 --env-file ./docker-node.env --name nodemariacont nodewithmariadb_nodemaria ```
 - Open ``` localhost:3000 ``` in your browser
 
-Note that this will bring up only the nodejs application and not the DB, so the app will fail if you try to access the second page (```localhost:3000/mysql```)
+Note that this will bring up only the nodejs application and not the DB, so the app will fail if you try to access the second page (```localhost:3000/mariadb```)
 
 ##### Using docker-compose
 
@@ -66,31 +66,29 @@ exit
 ```
 The above commands will:
 
-- Start the nodemysql service defined in our docker-compose file and log you  into the console in the container
+- Start the nodemaria service defined in our docker-compose file and log you  into the console in the container
 - In the container, run npm install, which creates the node_modules folder in the container. Since we have a volume mounted in our container to the nodeApp folder in our machine (as defined in our dockercompose file), the node_modules folder gets created in our host machine as well and is ready for use.
 - Exit the container and return to our host machine
 
 ###### Bring the application up
 
-Use ```docker-compose up``` in the same directory where you have the docker-compose file to bring the application up . It uses a ```docker-compose.env``` file to pass the environment variables to the mysql service (better than keeping them in the docker-compose.yaml file).
+Use ```docker-compose up``` in the same directory where you have the docker-compose file to bring the application up . It uses a ```docker-compose.env``` file to pass the environment variables to the mariadb service (better than keeping them in the docker-compose.yaml file).
 
 
 #### Running the Tests
 
 - With the application running, login to the container with:
 
-  `docker exec -it nodemysqlcont 'bash'`
+  `docker exec -it nodemariacont 'bash'`
 
 - Run `npm test`
 - To exit the container just use `exit`.
 
 The application test scripts were created using _mocha_ and _chai_.
 
-Also, use ```npm run test-exp``` to run some tests and export the results to a file in a format that Jenkins can understand. In this last case, the results will be saved to the _./test/results/test-results.xml_ file
-
 #### Restarting the nodejs container during development
 
-During development, you may wantto restart the nodejs container. You can do this with: ```docker restart nodemysqlcont```
+During development, you may wantto restart the nodejs container. You can do this with: ```docker restart nodemariacont```
 
 Alternatively you can install something like nodemon in your image to monitor for changes in the file system.
 
@@ -106,8 +104,8 @@ To push this the node image to dockerhub, we will first need to tag it properly,
 
 ```bash
 docker login --username <dockerUserId>
-docker tag nodewithmysql_nodemysql <dockerUserId>/simplenodemysql
-docker push <dockerUserId>/simplenodemysql:latest
+docker tag nodewithmariadb_nodemaria <dockerUserId>/simplenodemaria
+docker push <dockerUserId>/simplenodemaria:latest
 ```
 
 **Note** that you will need to change the name of the image to match your own docker hub account
@@ -147,74 +145,3 @@ To see how the resources spin or down, use the dashboard
 
 To find the url where the application is running:
 ```minikube service list```
-
-#### Automating with Jenkins
-
-Application uses a pipeline created using the Jenkinsfile in the application root directory. This file tells Jenkins what it needs to do. The steps required are basically:
-
-Pull latest version from Bitbucket -> Build image -> Start container and run tests -> Deploy to Minikube
-
-Note that since the Jenkins image does not come pre-installed with Kubectl, we build a custom image that has both Jenkins and Kubectl in the same image. The required Dockerfile can be found in the _jenkinsWithK8s_ directory.
-
-##### Setup authentication to minikube
-
-In order to authenticate to minikube, we need to copy some certificates from our local machine to our custom Jenkins image.  For obvious reasons, these certificates are not checked in to source control. Here is what needs to be done to set them up:
-
-- In the _jenkinsWithK8s_ directory, create two directories **kubeconfig** and **minikConfig**
-- Copy the contents from your machine's **~/.kube** directory to the newly created **kubeconfig** directory (note that the path for the .kube directory given here is for a mac, it may be different in other OS)
-- Copy the following certificates from your machine's **~/.minikube** directory to the newly created **minikConfig** directory (note that the path for the .minikube directory given here is for a mac, it may be different in other OS):
-    - client.crt
-    - client.key
-    - ca.crt
-
-Once the certificates are in these directories, the image will pick them up automatically
-
-From within the _jenkinsWithK8s_ folder:
-
-``` bash
-  mkdir kubeconfig
-  mkdir minikConfig
-  cp -r ~/.kube/* kubeconfig/
-  cp ~/.minikube/client.crt minikConf
-  cp ~/.minikube/client.key minikConf
-  cp ~/.minikube/ca.crt minikConfig
-```
-
-##### Running the Jenkins image
-
- To run the Jenkins image:
-
-``` bash
- cd ./jenkinsWithK8s
- docker build -t jenk .
-
- docker run -u root --rm -d -p 8080:8080 -p 50000:50000 --name jenkcont -v jenkins-data:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock jenk
-```
-
-##### Initializing Jenkins for first time run
-
- After the image is running:
-
-–	Login on the web browser at ```localhost:8080```
-–	Get the initial admin pwd :
-
-``` bash
-docker exec -it jenkcont 'bash'
-cd /var/jenkins_home/secrets/
-cat initialAdminPassword
-```
-
-- Paste the admin password in the Jenkins UI at localhost:8080
-- Install required plugins (the defaults should be fine)
-- Create a new user
-
-##### Setup a pipeline to run our jobs
-
- - Add credentials for Bitbucket and Docker Hub in the credentials section in Jenkins
- - Create a new pipeline job that gets source code from the source control manager (SMC) and uses our Jenkins file.
-   - Description
-   - Build trigger (for our demo, we just scheduled to run every 10 mins)
-   - Pipeline from scm
-   - Location of the repo (bitbucket url)
-   - Credentials to bitbucket if using a private repository
-   - Location of the Jenkins file. In our project the jenkins file is in the root, so you can just enter jenkinsfile without a path.
