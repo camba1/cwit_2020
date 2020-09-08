@@ -21,3 +21,10 @@ services:
       - ./nodeApp:/code
     ports:
       - "3000:3000"
+  redis:
+    image: redis
+    container_name: rediscont
+    env_file: ./redis/docker-redis.env
+    command: ["sh", "-c", "redis-server", "--requirepass", "$${REDIS_PASS}"]
+    ports:
+      - "6379:6379"
