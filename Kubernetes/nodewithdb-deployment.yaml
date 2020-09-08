@@ -3,28 +3,26 @@ kind: Deployment
 metadata:
   annotations:
     kompose.cmd: kompose --file ./../docker-compose.yml convert
-    kompose.version: 1.19.0 ()
+    kompose.version: 1.21.0 ()
   creationTimestamp: null
   labels:
-    io.kompose.service: nodemysql
-  name: nodemysql
+    io.kompose.service: nodewithdb
+  name: nodewithdb
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nodemysql
-      io.kompose.service: nodemysql
+      io.kompose.service: nodewithdb
   strategy:
     type: Recreate
   template:
     metadata:
       annotations:
         kompose.cmd: kompose --file ./../docker-compose.yml convert
-        kompose.version: 1.19.0 ()
+        kompose.version: 1.21.0 ()
       creationTimestamp: null
       labels:
-        app: nodemysql
-        io.kompose.service: nodemysql
+        io.kompose.service: nodewithdb
     spec:
       containers:
       - env:
@@ -32,31 +30,33 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: DB_HOST
-              name: docker-compose-node-env
+              name: nodeapp-docker-node-env
         - name: DB_NAME
           valueFrom:
             configMapKeyRef:
               key: DB_NAME
-              name: docker-compose-node-env
+              name: nodeapp-docker-node-env
         - name: DB_PORT
           valueFrom:
             configMapKeyRef:
               key: DB_PORT
-              name: docker-compose-node-env
+              name: nodeapp-docker-node-env
         - name: DB_PWD
           valueFrom:
             configMapKeyRef:
               key: DB_PWD
-              name: docker-compose-node-env
+              name: nodeapp-docker-node-env
         - name: DB_USER
           valueFrom:
             configMapKeyRef:
               key: DB_USER
-              name: docker-compose-node-env
-        image: bolbeck/dow2020simplelife
-        name: nodemysqlcont
+              name: nodeapp-docker-node-env
+        image: bolbeck/nodewithdb
+        imagePullPolicy: ""
+        name: nodewithdbcont
         ports:
         - containerPort: 3000
         resources: {}
       restartPolicy: Always
+      serviceAccountName: ""
 status: {}

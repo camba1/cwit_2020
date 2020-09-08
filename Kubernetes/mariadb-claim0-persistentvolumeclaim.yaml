@@ -3,8 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: mysql2-claim0
-  name: mysql2-claim0
+    io.kompose.service: mariadb-claim0
+  name: mariadb-claim0
 spec:
   accessModes:
   - ReadWriteOnce

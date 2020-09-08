@@ -3,16 +3,16 @@ kind: Service
 metadata:
   annotations:
     kompose.cmd: kompose --file ./../docker-compose.yml convert
-    kompose.version: 1.19.0 ()
+    kompose.version: 1.21.0 ()
   creationTimestamp: null
   labels:
-    io.kompose.service: mysql2
-  name: mysql2
+    io.kompose.service: nodewithdb
+  name: nodewithdb
 spec:
   ports:
-  - name: "3306"
-    port: 3306
-    targetPort: 3306
+  - name: "3000"
+    port: 3000
+    targetPort: 3000
   selector:
-    io.kompose.service: mysql2
+    io.kompose.service: nodewithdb
   type: NodePort

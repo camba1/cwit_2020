@@ -5,5 +5,5 @@ kind: ConfigMap
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: mysql2-docker-compose-env
-  name: mysql2-docker-compose-env
+    io.kompose.service: mariadb-docker-compose-env
+  name: docker-compose-env
