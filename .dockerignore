@@ -10,3 +10,5 @@ MariaDB/Data/*
 Kubernetes_old/*
 Kubernetes/*
 Demo/*
+node_modules/*
+npm-debug.log
