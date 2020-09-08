@@ -1,0 +1,12 @@
+# Files to be ignored when building the docker image.
+# ** indicates that it should exclude from all directories in range.
+# ! indicates exceptions.
+
+MariaDB/Data/*
+**/*.md
+.git/*
+.gitignore
+.idea/
+Kubernetes_old/*
+Kubernetes/*
+Demo/*
