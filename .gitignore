@@ -1,4 +1,5 @@
 node_modules/
 .DS_Store
 MariaDB/Data/
+Kubernetes_old/
 demo/
