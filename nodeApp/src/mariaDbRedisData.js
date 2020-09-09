@@ -27,6 +27,10 @@ const getData =  (request, response) => {
   });
 }
 
+/**
+* Gets data from Redis if available. Otherwise get data from MariaDB, save it to Redis
+* and then return it to the caller.
+*/
 async function getreturnData(){
   let result = {}
   let source = "Redis"
@@ -44,7 +48,6 @@ async function getreturnData(){
   }
 
 }
-
 
 /**
  * Get data from DB
