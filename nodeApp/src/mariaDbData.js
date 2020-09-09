@@ -17,7 +17,7 @@ var pool = mymariadb.createPool({
 const getData =  (request, response) => {
   getMariaBbData(request, response).then(result=>{
     response.render('mydbdata', {
-      title: 'Fine Dinning' ,
+      title: 'Fine Dining' ,
       tableHeader:'Delicious Foods by Maria',
       dataList: result
     })
