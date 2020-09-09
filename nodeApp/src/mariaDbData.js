@@ -37,7 +37,12 @@ async function getMariaBbData() {
     throw err;
   }
   finally {
-    if (conn) { conn.end();}
+    if (conn) {
+      conn.end().then(() => {
+          console.log('connection closed')
+        }
+      ).catch(err => { console.log(err) })
+    }
   }
 }
 
