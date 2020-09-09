@@ -3,6 +3,7 @@
 const express = require('express');
 const mariaDbData = require('./mariaDbData');
 const helloWorld = require('./helloworld');
+const redisData = require('./mariaDbRedisData');
 
 // Constants
 const PORT = 3000;
@@ -21,6 +22,13 @@ app.get('/', (req, res) => {
 //mariadb page calls mariadb module
 app.get('/mariadb', (req, res) => {
    mariaDbData.getData(req, res)
+  }
+);
+
+//redis page calls mariadbredis module and brings data from redis (if cached) or
+//mariaDB
+app.get('/redis', (req, res) => {
+   redisData.getData(req, res)
   }
 );
 
