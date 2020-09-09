@@ -15,6 +15,7 @@ services:
     build: ./nodeApp
     depends_on:
       - mariadb
+      - redis
     container_name: nodewithdbcont
     env_file: ./nodeApp/docker-node.env
     volumes:
