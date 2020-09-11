@@ -1,12 +1,9 @@
 # Introduction to K8s
 ## CWIT Conference 2020
 
-Simple Nodejs application connecting to MariaDB and packaged with Docker for deployment in Kubernetes . This application is part of the 'Introduction to K8s' presentation at the Central Wisconsin IT Conference 2020.
+Simple Nodejs application connecting to MariaDB and Redis. App is packaged using Docker and can be deployed to Kubernetes. This application is part of the 'Introduction to K8s' presentation at the Central Wisconsin IT Conference 2020.
 
-### About this project
-This project was initially created for a demo. If you see something that could be improved either in the code or this document please feel free to open a pull request.
-
-All my code in this repo is under MIT license, so feel free to use as needed. For external libraries and images used in this repo, please refer to their own licensing terms.
+If you see something that could be improved either in the code or this document please feel free to open a pull request.
 
 ### Pre-requisites
 In order to run the project in its entirety, you will need to have :
@@ -14,41 +11,33 @@ In order to run the project in its entirety, you will need to have :
 - A git account (I used [Bitbucket](http://bitbucket.org))
 - A docker repository (I used [Docker hub](hub.docker.com))
 - [Docker](docker.com) installed in your machine ( I used Docker Desktop on my Mac)
-- [Minikube](https://minikube.sigs.k8s.io) installed in your machine
+- [Minikube](https://minikube.sigs.k8s.io) installed in your machine.
 
 Also, this document refers to the image in docker hub as _bolbeck/cwit2020_. You should change this to your own image name so that it can run under your own docker hub account (otherwise you will not be able to push the image out).
 
 ### The Application
 
-The app has two parts:
+The app has three components, whic run in 3 separate containers:
 
-- **MariaDB database**: based on the official MariaDB image. The DB is initialized to have a test DB and a Test table with some sample dummy data. The initialization is used with the script in the ./MariaDB/init directory. This is run only once and only if the data volume (./MariaDB/Data) is empty
+- **MariaDB database**: based on the official MariaDB image. The image is initialized to have a test DB and a Test table. Sample data is loaded on image container initialization via the script in the ./MariaDB/init directory. This is run only once and only if the data volume (./MariaDB/Data) is empty.
+
+- **Redis**: Based on the official Redis image and used to cache data to be displayed in the application.
 
 
-- **Nodejs**: app which is built from the ```Dockerfile``` in the nodeApp directory. The app has two entry points:
+- **Nodejs**: app packaged via the ```Dockerfile``` in the nodeApp directory. The app has three entry points:
     - **Root** ("/") just pulls writes hello world and the hostname
-    - **/mariadb** pull data from the test DB in MariaDB and posts the JSON on the browser
+    - **/mariadb** pulls data from the test DB in MariaDB and posts the data on the browser
+    - **/redis** gets data from Redis if the data has been cached. Otherwise pulls the data from MariaDb and caches it in Redis. Data is the posted on the browser
 
 Note that the application sends back pre-rendered page back to the client and uses _pug_ as the rendering engine.
 
 #### Bringing the application up
 
-##### Using the Dockerfile
-
-To bring up just the nodejs app:
-
-- Go to the ./nodeApp directory
-- Build the app: ``` docker build -t nodewithmariadb_nodewithdb . ```
-- Run the container: ``` docker run -p 3000:3000 --env-file ./docker-node.env --name nodewithdbcont nodewithmariadb_nodewithdb ```
-- Open ``` localhost:3000 ``` in your browser
-
-Note that this will bring up only the nodejs application and not the DB, so the app will fail if you try to access the second page (```localhost:3000/mariadb```)
-
 ##### Using docker-compose
 
 ###### Creating the node_modules folder
 
-If this is the **first time** you will try to bring up the application, you will need to create the ```node_modules``` folder since that is not checked into source control.
+If this is the **first time** you are starting up the application, you will first need to create the ```node_modules``` folder since that is not checked into source control.
 
 If you have npm installed in your machine:
 
@@ -66,31 +55,14 @@ exit
 ```
 The above commands will:
 
-- Start the nodemaria service defined in our docker-compose file and log you  into the console in the container
-- In the container, run npm install, which creates the node_modules folder in the container. Since we have a volume mounted in our container to the nodeApp folder in our machine (as defined in our docker-compose file), the node_modules folder gets created in our host machine as well and is ready for use.
+- Start the node app and log you into the container console
+- In the container, run ```npm install``` to create the node_modules folder.
 - Exit the container and return to our host machine
 
 ###### Bring the application up
 
-Use ```docker-compose up``` in the same directory where you have the docker-compose file to bring the application up . It uses a ```docker-compose.env``` file to pass the environment variables to the mariadb service (better than keeping them in the docker-compose.yaml file).
+Use ```docker-compose up``` in the same directory where you have the docker-compose file to bring the application up .
 
-
-#### Running the Tests
-
-- With the application running, login to the container with:
-
-  `docker exec -it nodewithdbcont 'bash'`
-
-- Run `npm test`
-- To exit the container just use `exit`.
-
-The application test scripts were created using _mocha_ and _chai_.
-
-#### Restarting the nodejs container during development
-
-During development, you may want to restart the nodejs container. You can do this with: ```docker restart nodewithdbcont```
-
-Alternatively you can install something like nodemon in your image to monitor for changes in the file system.
 
 #### Bring application down
 
@@ -104,8 +76,8 @@ To push this the node image to docker hub, we will first need to tag it properly
 
 ```bash
 docker login --username <dockerUserId>
-docker tag nodewithmariadb_nodemaria <dockerUserId>/simplenodemaria
-docker push <dockerUserId>/simplenodemaria:latest
+docker tag cwit_2020_nodewithdb <dockerUserId>/nodewithdb
+docker push <dockerUserId>/nodewithdb:latest
 ```
 
 **Note** that you will need to change the name of the image to match your own docker hub account
@@ -114,9 +86,17 @@ docker push <dockerUserId>/simplenodemaria:latest
 
 ##### K8s Manifests
 
-The K8s manifests can be found in the `./Kubernetes` folder. they were created using Kompose and then tweaked to match the needs of the demo.
+There are 4 folders containing Kubernetes manifests and they are menat to build on each other as we proceed through the demo:
 
-Kompose out of the box may not create exactly what you need, but gets you 80% - 90% there. The final modified files are in the Kubernetes folder already, but you could recreate the original output from Kompose using:
+- **Kubernetes**: Contains manifests for the node app and MariaDB
+- **KubernetesWRedis**: Manifests for the node app, MariaDB and Redis setup as 3 separate deployments.
+- **KubernetesSideCar** Manifests for the node app, MariaDB and Redis but uses Redis as a sidecar for the node app. In other words, Redis runs in the same pod as the node app.
+- **KubernetesSecret** Replaces moves some of the environment variables for the node app from the configMap to a K* secret.
+- **KubernetesKustomize** Uses Kustomize to build variant of the node app deployment manifest so that it may be deploy to different environments
+
+The initial manifest where created using Kompose, which converted our docker-compose files to K* manifests.
+
+Kompose out of the box may not create exactly what you need, but gets you 80% - 90% there. The final modified files are in the Kubernetes folders already, but you could recreate the original output from Kompose:
 
 ``` bash
 mkdir KubernetesOrig
