@@ -1,0 +1,19 @@
+# kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# labels added to all Resources
+commonLabels:
+  environment: test
+
+# annotations added to all resources
+commonAnnotations:
+  support: myemail@email.xyz
+
+# base kuztomize location
+bases:
+- ../../base
+
+#patches to be applied to the bases
+patchesStrategicMerge:
+- replica_count.yaml

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mariadb-docker-compose-env
+  name: mariadb-initdb-config
+data:
+  initdb.sql: |
+    CREATE DATABASE IF NOT EXISTS `test`;
+    USE `test`;
+    CREATE TABLE IF NOT EXISTS `test`.`test` (`id` serial,`name` varchar(50) NOT NULL, PRIMARY KEY (id));
+    insert into test (`name`) VALUES ('Cheese Bread'),('Lasagna'),('Baguette'),('Pizza'),('Spaguetti');

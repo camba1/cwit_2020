@@ -1,0 +1,19 @@
+# kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# labels added to all Resources
+commonLabels:
+  environment: training
+
+# annotations added to all resources
+commonAnnotations:
+  support: 1-800-FIXIT
+
+# prefix for name
+nameprefix: jperedo-
+
+# base kuztomize location
+bases:
+- ../../base
+
