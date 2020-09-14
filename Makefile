@@ -27,6 +27,8 @@ k8version:
 	kubectl version --short
 k8runpod:
 	kubectl run mariadb --image=mariadb --port=3306  --dry-run=client -o yaml
+k8get:
+	kubectl get ${RESOURCENAME}
 k8createDeploy:
 	kubectl create deployment --image=mariadb mariadb --dry-run=client -o yaml
 k8createService:
