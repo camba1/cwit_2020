@@ -5,8 +5,8 @@ data:
   DB_PORT: "3306"
   DB_PWD: TestDB@home2
   DB_USER: root
-  # REDIS_HOST: redis
-  REDIS_HOST: localhost
+  REDIS_HOST: redis
+  # REDIS_HOST: localhost
   REDIS_PORT: "6379"
   REDIS_PASS: TestDB@home2
 kind: ConfigMap
