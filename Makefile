@@ -27,10 +27,10 @@ k8version:
 	kubectl version --short
 k8runpod:
 	kubectl run mariadb --image=mariadb --port=3306  --dry-run=client -o yaml
-k8get:
-	kubectl get ${RESOURCENAME}
 k8createDeploy:
 	kubectl create deployment --image=mariadb mariadb --dry-run=client -o yaml
+k8get:
+	kubectl get ${RESOURCENAME}
 k8createService:
 	kubectl create service nodeport redis --tcp=6379:6379 --dry-run=client -o yaml
 k8manifests:
@@ -46,9 +46,11 @@ K8describe:
 k8restartdeployment:
 	kubectl rollout restart deployment ${DEPLOYMENTNAME}
 k8rolloutHistory:
-	kubectl rollout restart deployment ${DEPLOYMENTNAME}
+	kubectl rollout history deployment ${DEPLOYMENTNAME}
 k8rolloutHistoryDetail:
-	kubectl rollout restart deployment ${DEPLOYMENTNAME} --revision=${RevisionNumber}
+	kubectl rollout history deployment ${DEPLOYMENTNAME} --revision=${RevisionNumber}
+K8undorollout:
+	kubectl rollout undo deployment ${DEPLOYMENTNAME} --to-revision=${RevisionNumber}
 k8diff:
 	kubectl diff -f ${FILENAME}
 K8secret:
