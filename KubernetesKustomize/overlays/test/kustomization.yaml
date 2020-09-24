@@ -11,6 +11,7 @@ commonAnnotations:
   support: myemail@email.xyz
 
 # base kustomize location
+#resources: <- starting with version 3
 bases:
 - ../../base
 
