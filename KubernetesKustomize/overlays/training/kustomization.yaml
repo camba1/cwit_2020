@@ -11,7 +11,7 @@ commonAnnotations:
   support: 1-800-FIXIT
 
 # prefix for name
-nameprefix: jperedo-
+#nameprefix: jperedo-
 
 # base kuztomize location
 #resources: <- starting with version 3
