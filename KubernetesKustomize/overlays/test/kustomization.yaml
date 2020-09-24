@@ -10,7 +10,7 @@ commonLabels:
 commonAnnotations:
   support: myemail@email.xyz
 
-# base kuztomize location
+# base kustomize location
 bases:
 - ../../base
 
