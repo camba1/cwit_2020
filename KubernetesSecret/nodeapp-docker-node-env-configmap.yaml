@@ -10,7 +10,6 @@ data:
   # REDIS_PASS: TestDB@home2
 kind: ConfigMap
 metadata:
-  creationTimestamp: null
   labels:
     io.kompose.service: nodewithdb-nodeapp-docker-node-env
   name: nodeapp-docker-node-env

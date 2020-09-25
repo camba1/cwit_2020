@@ -4,7 +4,6 @@ metadata:
   annotations:
     kompose.cmd: kompose --file ./../docker-compose.yml convert
     kompose.version: 1.21.0 ()
-  creationTimestamp: null
   labels:
     io.kompose.service: redis
   name: redis
@@ -19,7 +18,6 @@ spec:
       annotations:
         kompose.cmd: kompose --file ./../docker-compose.yml convert
         kompose.version: 1.21.0 ()
-      creationTimestamp: null
       labels:
         io.kompose.service: redis
     spec:
@@ -44,5 +42,3 @@ spec:
         resources: {}
       restartPolicy: Always
       serviceAccountName: ""
-      volumes: null
-status: {}

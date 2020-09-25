@@ -3,7 +3,6 @@ data:
   REDIS_PASS: TestDB@home2
 kind: ConfigMap
 metadata:
-  creationTimestamp: null
   labels:
     io.kompose.service: redis-redis-docker-redis-env
   name: redis-docker-redis-env

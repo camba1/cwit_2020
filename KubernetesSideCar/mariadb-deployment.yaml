@@ -4,7 +4,6 @@ metadata:
   annotations:
     kompose.cmd: kompose --file ./../docker-compose.yml convert
     kompose.version: 1.21.0 ()
-  creationTimestamp: null
   labels:
     io.kompose.service: mariadb
   name: mariadb
@@ -20,7 +19,6 @@ spec:
       annotations:
         kompose.cmd: kompose --file ./../docker-compose.yml convert
         kompose.version: 1.21.0 ()
-      creationTimestamp: null
       labels:
         io.kompose.service: mariadb
     spec:
@@ -51,4 +49,3 @@ spec:
       - name: mariadb-initdb
         configMap:
           name: mariadb-initdb-config
-status: {}
