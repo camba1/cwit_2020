@@ -5,7 +5,7 @@ services:
     image: mariadb
     restart: always
     container_name: nodemariadb
-    env_file: docker-compose.env
+    env_file: MariaDB/docker-compose.env
     volumes:
       - ./MariaDB/Data:/var/lib/mysql
       - ./MariaDB/init:/docker-entrypoint-initdb.d
