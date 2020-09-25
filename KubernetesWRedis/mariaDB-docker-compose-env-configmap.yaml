@@ -6,4 +6,4 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: mariadb-docker-compose-env
-  name: docker-compose-env
+  name: mariadb-docker-compose-env

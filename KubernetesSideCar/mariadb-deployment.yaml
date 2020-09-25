@@ -30,7 +30,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: MYSQL_ROOT_PASSWORD
-              name: docker-compose-env
+              name: mariadb-docker-compose-env
         image: mariadb
         imagePullPolicy: ""
         name: nodemariadb
