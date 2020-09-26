@@ -1,9 +1,0 @@
-apiVersion: v1
-data:
-  MYSQL_ROOT_PASSWORD: TestDB@home2
-kind: ConfigMap
-metadata:
-  creationTimestamp: null
-  labels:
-    io.kompose.service: mariadb-docker-compose-env
-  name: docker-compose-env

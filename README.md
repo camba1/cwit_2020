@@ -88,7 +88,6 @@ docker push <dockerUserId>/nodewithdb:latest
 
 There are 4 folders containing Kubernetes manifests and they are menat to build on each other as we proceed through the demo:
 
-- **Kubernetes**: Contains manifests for the node app and MariaDB
 - **KubernetesWRedis**: Manifests for the node app, MariaDB and Redis setup as 3 separate deployments.
 - **KubernetesSideCar** Manifests for the node app, MariaDB and Redis but uses Redis as a sidecar for the node app. In other words, Redis runs in the same pod as the node app.
 - **KubernetesSecret** Replaces moves some of the environment variables for the node app from the configMap to a K* secret.
@@ -114,7 +113,7 @@ For all the manifests at once:
 
 ```kubectl apply -f <Foldername>```
 
-Similarly to delete resources created by the manifests:
+Similarly, to delete resources created by the manifests:
 
 ```kubectl delete -f <path/filename.yaml>```
 or
