@@ -7,8 +7,8 @@ commonLabels:
   environment: test
 
 # annotations added to all resources
-commonAnnotations:
-  support: myemail@email.xyz
+#commonAnnotations:
+#  support: myemail@email.xyz
 
 # base kustomize location
 #resources: <- starting with version 3
