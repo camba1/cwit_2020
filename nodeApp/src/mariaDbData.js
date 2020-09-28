@@ -12,7 +12,7 @@ var pool = mymariadb.createPool({
 });
 
 /**
- * Returns pre-rendered page with daya to client
+ * Returns pre-rendered page with data to client
  */
 const getData =  (request, response) => {
   getMariaBbData(request, response).then(result=>{
@@ -38,10 +38,11 @@ async function getMariaBbData() {
   }
   finally {
     if (conn) {
-      conn.end().then(() => {
-          console.log('connection closed')
-        }
-      ).catch(err => { console.log(err) })
+      conn.end()
+        //  .then(() => {
+          // console.log('connection closed')
+        //})
+        .catch(err => { console.log(err) })
     }
   }
 }
