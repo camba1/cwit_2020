@@ -55,9 +55,12 @@ k8diff:
 	kubectl diff -f ${FILENAME}
 K8secret:
 	kubectl get secret nodewithdb-secret -o yaml
-
+k8viewcontext:
+	kubectl config current-context
+k8setnamespace:
+	kubectl config set-context --current --namespace=${NAMESPACENAME}
 # Kustommize
-# Refernce: https://kubectl.docs.kubernetes.io/pages/reference/kustomize.html#bases
+# Reference: https://kubectl.docs.kubernetes.io/pages/reference/kustomize.html#bases
 # 					https://kubectl.docs.kubernetes.io/pages/app_customization/introduction.html
 kusBuild:
 	kubectl kustomize KubernetesKustomize/${KUSTOMIZEDIR}
