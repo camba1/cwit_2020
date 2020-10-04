@@ -9,17 +9,17 @@ If you see something that could be improved either in the code or this document 
 In order to run the project in its entirety, you will need to have :
 
 - A git account (I used [Bitbucket](http://bitbucket.org))
-- A docker repository (I used [Docker hub](hub.docker.com))
-- [Docker](docker.com) installed in your machine ( I used Docker Desktop on my Mac)
+- A docker repository (I used [Docker hub](https://hub.docker.com))
+- [Docker](https://docker.com) installed in your machine ( I used Docker Desktop on my Mac)
 - [Minikube](https://minikube.sigs.k8s.io) installed in your machine.
 
 Also, this document refers to the image in docker hub as _bolbeck/cwit2020_. You should change this to your own image name so that it can run under your own docker hub account (otherwise you will not be able to push the image out).
 
 ### The Application
 
-The app has three components, whic run in 3 separate containers:
+The app has three components, which run in 3 separate containers:
 
-- **MariaDB database**: based on the official MariaDB image. The image is initialized to have a test DB and a Test table. Sample data is loaded on image container initialization via the script in the ./MariaDB/init directory. This is run only once and only if the data volume (./MariaDB/Data) is empty.
+- **MariaDB database**: based on the official MariaDB image. When the image is initialized,  it automatically creates a test database and a test table. Sample data is loaded on image container initialization via the script in the ./MariaDB/init directory. This is run only once and only if the data volume (./MariaDB/Data) is empty.
 
 - **Redis**: Based on the official Redis image and used to cache data to be displayed in the application.
 
@@ -27,7 +27,7 @@ The app has three components, whic run in 3 separate containers:
 - **Nodejs**: app packaged via the ```Dockerfile``` in the nodeApp directory. The app has three entry points:
     - **Root** ("/") just pulls writes hello world and the hostname
     - **/mariadb** pulls data from the test DB in MariaDB and posts the data on the browser
-    - **/redis** gets data from Redis if the data has been cached. Otherwise pulls the data from MariaDb and caches it in Redis. Data is the posted on the browser
+    - **/redis** gets data from Redis if the data has been cached. Otherwise, it pulls the data from MariaDb and caches it in Redis. Data is the posted on the browser.
 
 Note that the application sends back pre-rendered page back to the client and uses _pug_ as the rendering engine.
 
@@ -86,12 +86,12 @@ docker push <dockerUserId>/nodewithdb:latest
 
 ##### K8s Manifests
 
-There are 4 folders containing Kubernetes manifests and they are menat to build on each other as we proceed through the demo:
+There are 4 folders containing Kubernetes manifests. The folders build on each other as we proceed through the demo:
 
 - **KubernetesWRedis**: Manifests for the node app, MariaDB and Redis setup as 3 separate deployments.
 - **KubernetesSideCar** Manifests for the node app, MariaDB and Redis but uses Redis as a sidecar for the node app. In other words, Redis runs in the same pod as the node app.
-- **KubernetesSecret** Replaces moves some of the environment variables for the node app from the configMap to a K* secret.
-- **KubernetesKustomize** Uses Kustomize to build variant of the node app deployment manifest so that it may be deploy to different environments
+- **KubernetesSecret** Moves several environment variables for the node app from the configMap to a K* secret.
+- **KubernetesKustomize** Uses Kustomize to build variant of the node app deployment manifest so that it may be deployed to different environments
 
 The initial manifest where created using Kompose, which converted our docker-compose files to K* manifests.
 
