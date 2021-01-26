@@ -8,7 +8,7 @@ If you see something that could be improved either in the code or this document 
 ### Pre-requisites
 In order to run the project in its entirety, you will need to have :
 
-- A git account (I used [Bitbucket](http://bitbucket.org))
+- A git account 
 - A docker repository (I used [Docker hub](https://hub.docker.com))
 - [Docker](https://docker.com) installed in your machine ( I used Docker Desktop on my Mac)
 - [Minikube](https://minikube.sigs.k8s.io) installed in your machine.
